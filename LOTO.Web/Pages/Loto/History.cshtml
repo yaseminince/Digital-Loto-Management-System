@@ -1,0 +1,326 @@
+﻿@page
+@model LOTO.Web.Pages.Loto.HistoryModel
+
+@{
+    ViewData["Title"] = "LOTO History";
+}
+
+<div class="container-fluid px-4 py-4">
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1"
+            style="color: #0b2d4d;">
+
+            LOTO History
+
+        </h2>
+
+        <p class="text-muted mb-0">
+
+            View your completed LOTO records
+
+        </p>
+
+    </div>
+
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0 fw-bold"
+                    style="color: #0b2d4d;">
+
+                    Completed LOTOs
+
+                </h5>
+
+                <span class="text-muted small">
+
+                    @Model.Lotos.Count record(s)
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table id="historyTable"
+                   class="table table-hover align-middle mb-0">
+
+                <thead style="background-color: #f8fafc;">
+
+                    <tr>
+
+                        <th class="px-4 py-3 small text-uppercase text-muted">
+                            LOTO
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            Details
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            Start
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            Expected End
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            End Date
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @foreach (var loto in Model.Lotos)
+                    {
+                        <tr>
+
+                            <!-- LOTO -->
+
+                            <td class="px-4">
+
+                                <div class="fw-bold"
+                                     style="color: #0b2d4d;">
+
+                                    @loto.LotoNumber
+
+                                </div>
+
+                                <div class="small text-muted mt-1">
+
+                                    @loto.LotoType
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- Details -->
+
+                            <td>
+
+                                <div class="d-flex flex-wrap gap-2">
+
+                                    <span class="badge rounded-pill bg-light text-dark border">
+
+                                        Plant:
+                                        @loto.Plant?.Name
+
+                                    </span>
+
+
+                                    <span class="badge rounded-pill bg-light text-dark border">
+
+                                        Dept:
+                                        @loto.Department?.Name
+
+                                    </span>
+
+
+                                    <span class="badge rounded-pill bg-light text-dark border">
+
+                                        Location:
+                                        @loto.Location?.Name
+
+                                    </span>
+
+
+                                    <span class="badge rounded-pill bg-light text-dark border">
+
+                                        Equipment:
+                                        @loto.Equipment?.Name
+
+                                    </span>
+
+                                </div>
+
+
+                                @if (!string.IsNullOrWhiteSpace(loto.Description))
+                                {
+                                    <div class="small text-muted mt-2">
+
+                                        <strong>
+                                            Description:
+                                        </strong>
+
+                                        @loto.Description
+
+                                    </div>
+                                }
+
+                            </td>
+
+
+                            <!-- Start -->
+
+                            <td data-order="@loto.StartDate.ToString("yyyy-MM-dd HH:mm:ss")">
+
+                                <span class="text-nowrap">
+
+                                    @loto.StartDate.ToString("dd.MM.yyyy HH:mm")
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Expected End -->
+
+                            <td data-order="@loto.ExpectedEndDate.ToString("yyyy-MM-dd HH:mm:ss")">
+
+                                <span class="text-nowrap">
+
+                                    @loto.ExpectedEndDate.ToString("dd.MM.yyyy HH:mm")
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- End Date -->
+
+                            <td data-order="@(loto.ClosedDate?.ToString("yyyy-MM-dd HH:mm:ss") ?? "")">
+
+                                <span class="text-nowrap">
+
+                                    @(loto.ClosedDate?.ToString("dd.MM.yyyy HH:mm") ?? "-")
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">
+
+                                    Closed
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+
+            @if (Model.Lotos == null || !Model.Lotos.Any())
+            {
+                <div class="text-center py-5 text-muted">
+
+                    <div class="mb-2"
+                         style="font-size: 32px;">
+
+                        ✓
+
+                    </div>
+
+                    <div class="fw-semibold">
+
+                        No completed LOTOs
+
+                    </div>
+
+                    <small>
+
+                        Your completed LOTO records will appear here.
+
+                    </small>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.min.css">
+
+
+    <script src="https://cdn.datatables.net/2.3.3/js/dataTables.min.js"></script>
+
+
+    <script>
+
+        $(document).ready(function() {
+
+            $('#historyTable').DataTable({
+
+                pageLength: 10,
+
+                lengthMenu: [5, 10, 25, 50],
+
+                order: [[4, 'desc']],
+
+                columnDefs: [
+
+                    {
+                        orderable: false,
+                        targets: [1, 5]
+                    }
+
+                ],
+
+                language: {
+
+                    search: "Search:",
+
+                    lengthMenu: "Show _MENU_ records",
+
+                    info: "Showing _START_ to _END_ of _TOTAL_ records",
+
+                    infoEmpty: "Showing 0 to 0 of 0 records",
+
+                    zeroRecords: "No matching records found",
+
+                    paginate: {
+
+                        first: "First",
+
+                        last: "Last",
+
+                        next: "Next",
+
+                        previous: "Previous"
+
+                    }
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+}

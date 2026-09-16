@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="LOTO.Application/LOTO.Application.csproj" Id="d6803c26-7dcb-4a85-81b4-3717623ab743" />
+  <Project Path="LOTO.Domain/LOTO.Domain.csproj" Id="7c2b3464-3917-4389-ac0e-b2da4524f125" />
+  <Project Path="LOTO.Infrastructure/LOTO.Infrastructure.csproj" Id="956cd17f-79bf-4fb7-8d88-22deac59750f" />
+  <Project Path="LOTO.Web/LOTO.Web.csproj" Id="dcfdddce-7b48-47d1-a06e-3fbfedd21311" />
+</Solution>

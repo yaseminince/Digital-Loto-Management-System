@@ -1,0 +1,464 @@
+﻿@page
+@model LOTO.Web.Pages.Loto.EndModel
+@using LOTO.Domain.Enums
+
+@{
+    ViewData["Title"] = "End LOTO";
+}
+
+<div class="container-fluid px-4 py-4">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1" style="color: #0b2d4d;">
+            End LOTO
+        </h2>
+
+        <p class="text-muted mb-0">
+            Select a LOTO to close
+        </p>
+
+    </div>
+
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+
+    <!-- Main Card -->
+    <div class="card border-0 shadow-sm">
+
+        <!-- Card Header -->
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0 fw-bold" style="color: #0b2d4d;">
+                    My Open LOTOs
+                </h5>
+
+                <span class="text-muted small">
+                    @Model.Lotos.Count record(s)
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Table -->
+        <div class="table-responsive">
+
+            <table id="endLotoTable"
+                   class="table table-hover align-middle mb-0">
+
+                <thead style="background-color: #f8fafc;">
+
+                    <tr>
+
+                        <th class="px-4 py-3 small text-uppercase text-muted">
+                            LOTO
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            Details
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            Start
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            Expected End
+                        </th>
+
+                        <th class="py-3 small text-uppercase text-muted">
+                            Status
+                        </th>
+
+                        <th class="py-3 pe-4 small text-uppercase text-muted">
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @if (Model.Lotos != null && Model.Lotos.Any())
+                    {
+                        @foreach (var loto in Model.Lotos)
+                        {
+                            <tr>
+
+                                <!-- LOTO -->
+                                <td class="px-4">
+
+                                    <div class="fw-bold" style="color: #0b2d4d;">
+                                        @loto.LotoNumber
+                                    </div>
+
+                                    <div class="small text-muted mt-1">
+                                        @loto.LotoType
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Details -->
+                                <td>
+
+                                    <div class="d-flex flex-wrap gap-2">
+
+                                        <span class="badge rounded-pill bg-light text-dark border">
+                                            Plant: @loto.Plant?.Name
+                                        </span>
+
+                                        <span class="badge rounded-pill bg-light text-dark border">
+                                            Dept: @loto.Department?.Name
+                                        </span>
+
+                                        <span class="badge rounded-pill bg-light text-dark border">
+                                            Location: @loto.Location?.Name
+                                        </span>
+
+                                        <span class="badge rounded-pill bg-light text-dark border">
+                                            Equipment: @loto.Equipment?.Name
+                                        </span>
+
+                                    </div>
+
+
+                                    @if (!string.IsNullOrWhiteSpace(loto.Description))
+                                    {
+                                        <div class="small text-muted mt-2">
+
+                                            <strong>Description:</strong>
+                                            @loto.Description
+
+                                        </div>
+                                    }
+
+                                </td>
+
+
+                                <!-- Start -->
+                                <td data-order="@loto.StartDate.ToString("yyyy-MM-dd HH:mm:ss")">
+
+                                    <span class="text-nowrap">
+                                        @loto.StartDate.ToString("dd.MM.yyyy HH:mm")
+                                    </span>
+
+                                </td>
+
+
+                                <!-- Expected End -->
+                                <td data-order="@loto.ExpectedEndDate.ToString("yyyy-MM-dd HH:mm:ss")">
+
+                                    <span class="text-nowrap">
+                                        @loto.ExpectedEndDate.ToString("dd.MM.yyyy HH:mm")
+                                    </span>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+
+                                    @if (loto.Status == LotoStatus.Active)
+                                    {
+                                        <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                                            Active
+                                        </span>
+                                    }
+                                    else if (loto.Status == LotoStatus.Overdue)
+                                    {
+                                        <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
+                                            Overdue
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- Action -->
+                                <td class="pe-4">
+
+                                    <button type="button"
+                                            class="btn btn-sm text-white px-3"
+                                            style="background-color: #0b2d4d;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#endLotoModal"
+                                            data-loto-id="@loto.Id"
+                                            data-loto-number="@loto.LotoNumber">
+
+                                        End LOTO
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+
+            @if (Model.Lotos == null || !Model.Lotos.Any())
+            {
+                <div class="text-center py-5 text-muted">
+
+                    <div class="mb-2" style="font-size: 32px;">
+                        ✓
+                    </div>
+
+                    <div class="fw-semibold">
+                        No open LOTOs
+                    </div>
+
+                    <small>
+                        You don't have any active or overdue LOTOs to close.
+                    </small>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- End LOTO Confirmation Modal -->
+
+<div class="modal fade"
+     id="endLotoModal"
+     tabindex="-1"
+     aria-labelledby="endLotoModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow">
+
+
+            <!-- Modal Header -->
+
+            <div class="modal-header border-0 px-4 pt-4">
+
+                <h5 class="modal-title fw-bold"
+                    id="endLotoModalLabel"
+                    style="color: #0b2d4d;">
+
+                    End LOTO
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <!-- Modal Body -->
+
+            <div class="modal-body px-4 pb-4">
+
+                <div class="mb-3">
+
+                    <div class="fw-semibold mb-1">
+                        Are you sure you want to end this LOTO?
+                    </div>
+
+                    <div class="text-muted small">
+
+                        LOTO Number:
+
+                        <span id="modalLotoNumber"
+                              class="fw-semibold"
+                              style="color: #0b2d4d;">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Form -->
+
+                <form method="post">
+
+                    <input type="hidden"
+                           id="modalLotoId"
+                           name="lotoId" />
+
+
+                    <div class="d-flex justify-content-end gap-2">
+
+                        <button type="button"
+                                class="btn btn-outline-secondary px-4"
+                                data-bs-dismiss="modal">
+
+                            Cancel
+
+                        </button>
+
+
+                        <button type="submit"
+                                class="btn text-white px-4"
+                                style="background-color: #0b2d4d;">
+
+                            End LOTO
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+@section Scripts {
+
+    <!-- DataTables -->
+
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.min.css">
+
+
+    <script src="https://cdn.datatables.net/2.3.3/js/dataTables.min.js"></script>
+
+
+    <script>
+
+        $(document).ready(function() { // tüm html verileri sıkıntısız çalışırsa eğer çalış demek
+
+            $('#endLotoTable').DataTable({ // endLotoTable'a DataTable özelliği ver
+
+                pageLength: 10,
+
+                lengthMenu: [5, 10, 25, 50],
+
+                order: [[2, 'desc']],
+
+                columnDefs: [
+
+                    {
+                        orderable: false,
+                        targets: [1, 4, 5]
+                    }
+
+                ],
+
+                language: {
+
+                    search: "Search:",
+
+                    lengthMenu: "Show _MENU_ records",
+
+                    info: "Showing _START_ to _END_ of _TOTAL_ records",
+
+                    infoEmpty: "Showing 0 to 0 of 0 records",
+
+                    zeroRecords: "No matching records found",
+
+                    paginate: {
+
+                        first: "First",
+
+                        last: "Last",
+
+                        next: "Next",
+
+                        previous: "Previous"
+
+                    }
+
+                }
+
+            });
+
+        });
+
+
+
+        // End LOTO Modal
+
+        const endLotoModal =
+            document.getElementById('endLotoModal');
+
+
+        endLotoModal.addEventListener(
+            'show.bs.modal',
+            function(event) {
+
+                const button =
+                    event.relatedTarget;
+
+
+                const lotoId =
+                    button.getAttribute('data-loto-id');
+
+
+                const lotoNumber =
+                    button.getAttribute('data-loto-number');
+
+
+                document.getElementById(
+                    'modalLotoId'
+                ).value = lotoId;
+
+
+                document.getElementById(
+                    'modalLotoNumber'
+                ).textContent = lotoNumber;
+
+            }
+        );
+
+    </script>
+
+
+    @if (Model.ShowSuccessMessage)
+    {
+        <script>
+
+            Swal.fire({
+
+                icon: "success",
+
+                title: "Success!",
+
+                text: "@Model.SuccessMessage",
+
+                confirmButtonText: "OK"
+
+            });
+
+        </script>
+    }
+
+}

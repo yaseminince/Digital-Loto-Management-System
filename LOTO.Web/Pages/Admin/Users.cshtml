@@ -1,0 +1,245 @@
+﻿@page
+@model LOTO.Web.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+            <h4 class="mb-0">
+                <i class="bi bi-people me-2"></i>
+                User Management
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table id="usersTable"
+                       class="table table-hover align-middle w-100">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+
+                                <td>
+                                    @user.Name
+                                </td>
+
+                                <td>
+                                    @user.Email
+                                </td>
+
+                                <td>
+                                    @user.Role?.Name
+                                </td>
+
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            Inactive
+                                        </span>
+                                    }
+                                </td>
+
+                                <td data-order="@user.CreatedDate.ToString("yyyy-MM-dd HH:mm:ss")">
+                                    @user.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex gap-2">
+
+                                        @if (user.IsActive)
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="Deactivate"
+                                                  class="deactivate-form">
+
+                                                <input type="hidden"
+                                                       name="userId"
+                                                       value="@user.Id" />
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-warning">
+                                                    <i class="bi bi-person-dash me-1"></i>
+                                                    Deactivate
+                                                </button>
+
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="Activate">
+
+                                                <input type="hidden"
+                                                       name="userId"
+                                                       value="@user.Id" />
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-success">
+                                                    <i class="bi bi-person-check me-1"></i>
+                                                    Activate
+                                                </button>
+
+                                            </form>
+                                        }
+
+                                        <form method="post"
+                                              asp-page-handler="Delete"
+                                              class="delete-form">
+
+                                            <input type="hidden"
+                                                   name="userId"
+                                                   value="@user.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash me-1"></i>
+                                                Delete
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function() {
+
+            $('#usersTable').DataTable({
+                pageLength: 10,
+
+                lengthMenu: [5, 10, 25, 50],
+
+                order: [[4, 'desc']],
+
+                columnDefs: [
+                    {
+                        orderable: false,
+                        targets: [5]
+                    }
+                ]
+            });
+
+
+            // DEACTIVATE CONFIRMATION
+            $('.deactivate-form').on('submit', function(e) {
+
+                e.preventDefault();
+
+                var form = this;
+
+                Swal.fire({
+                    title: 'Deactivate User?',
+                    text: 'This user will no longer be able to log in.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, deactivate',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+
+                });
+
+            });
+
+
+            // DELETE CONFIRMATION
+            $('.delete-form').on('submit', function(e) {
+
+                e.preventDefault();
+
+                var form = this;
+
+                Swal.fire({
+                    title: 'Delete User?',
+                    text: 'This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+
+                });
+
+            });
+
+        });
+    </script>
+
+
+    @if (Model.ShowSuccessMessage)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '@Model.SuccessMessage',
+                timer: 1800,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (Model.ShowErrorMessage)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '@Model.ErrorMessage'
+            });
+        </script>
+    }
+
+}

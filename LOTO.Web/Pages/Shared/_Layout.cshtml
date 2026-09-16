@@ -1,0 +1,771 @@
+﻿@using LOTO.Domain.Entities
+@using LOTO.Application.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<User> UserManager
+@inject INotificationService NotificationService
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - LOTO Management System</title>
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <style>
+
+            /* =========================
+                               GENERAL
+                               ========================= */
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                min-height: 100%;
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f4f7fb;
+                color: #1e293b;
+            }
+
+            body {
+                overflow-x: hidden;
+            }
+
+
+            /* =========================
+                               SIDEBAR
+                               ========================= */
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 260px;
+                height: 100vh;
+                background: linear-gradient(180deg, #082f49 0%, #06283f 100%);
+                color: white;
+                padding: 25px 15px 20px;
+                overflow-y: auto;
+                overflow-x: hidden;
+                z-index: 1000;
+                box-shadow: 5px 0 25px rgba(0, 0, 0, 0.08);
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+                .sidebar::-webkit-scrollbar {
+                    display: none;
+                }
+
+
+            /* =========================
+                               LOGO
+                               ========================= */
+
+            .sidebar-logo {
+                display: flex;
+                align-items: center;
+                padding: 8px 16px 25px;
+                margin-bottom: 18px;
+                font-size: 23px;
+                font-weight: 700;
+                letter-spacing: -0.5px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            }
+
+            .sidebar-logo-icon {
+                width: 38px;
+                height: 38px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 11px;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.12);
+                font-size: 19px;
+            }
+
+
+            /* =========================
+                               MENU LINKS
+                               ========================= */
+
+            .menu-link,
+            .sidebar-dropdown summary {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                padding: 12px 14px;
+                margin-bottom: 5px;
+                color: rgba(255, 255, 255, 0.86);
+                text-decoration: none;
+                border-radius: 9px;
+                font-size: 15px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+            }
+
+                .menu-link:hover,
+                .sidebar-dropdown summary:hover {
+                    background: rgba(255, 255, 255, 0.09);
+                    color: white;
+                    transform: translateX(2px);
+                }
+
+                .menu-link > div,
+                .sidebar-dropdown summary > div {
+                    display: flex;
+                    align-items: center;
+                    gap: 13px;
+                }
+
+                .menu-link i,
+                .sidebar-dropdown summary i {
+                    font-size: 17px;
+                }
+
+
+            /* =========================
+                               DROPDOWN
+                               ========================= */
+
+            .sidebar-dropdown {
+                margin-bottom: 5px;
+            }
+
+                .sidebar-dropdown summary {
+                    list-style: none;
+                }
+
+                    .sidebar-dropdown summary::-webkit-details-marker {
+                        display: none;
+                    }
+
+            .dropdown-arrow {
+                font-size: 12px !important;
+                transition: transform 0.2s ease;
+            }
+
+            .sidebar-dropdown[open] .dropdown-arrow {
+                transform: rotate(180deg);
+            }
+
+
+            /* =========================
+                               SUBMENU
+                               ========================= */
+
+            .submenu {
+                margin: 3px 0 10px 13px;
+                padding-left: 14px;
+                border-left: 1px solid rgba(255, 255, 255, 0.14);
+            }
+
+            .submenu-link {
+                display: flex;
+                align-items: center;
+                padding: 8px 12px;
+                margin: 2px 0;
+                color: rgba(255, 255, 255, 0.70);
+                text-decoration: none;
+                border-radius: 7px;
+                font-size: 14px;
+                transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+            }
+
+                .submenu-link:hover {
+                    background: rgba(255, 255, 255, 0.07);
+                    color: white;
+                    padding-left: 16px;
+                }
+
+
+            /* =========================
+                               SUBMENU DOT
+                               ========================= */
+
+            .submenu-dot {
+                width: 6px;
+                height: 6px;
+                margin-right: 11px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.50);
+                flex-shrink: 0;
+            }
+
+
+            /* =========================
+                               NOTIFICATION BADGE
+                               ========================= */
+
+            .notification-badge {
+                min-width: 21px;
+                height: 21px;
+                padding: 0 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                background: #ef476f;
+                color: white;
+                font-size: 11px;
+                font-weight: 700;
+            }
+
+
+            /* =========================
+                               LOGOUT
+                               ========================= */
+
+            .logout-link {
+                margin-top: 12px;
+                padding-top: 17px;
+                border-top: 1px solid rgba(255, 255, 255, 0.12);
+            }
+
+                .logout-link button {
+                    color: rgba(255, 255, 255, 0.86);
+                    width: 100%;
+                    text-align: left;
+                }
+
+
+            /* =========================
+                               MAIN CONTENT
+                               ========================= */
+
+            .main-content {
+                min-height: 100vh;
+                padding: 42px;
+            }
+
+                .main-content.with-sidebar {
+                    margin-left: 260px;
+                    width: calc(100% - 260px);
+                }
+
+                .main-content.no-sidebar {
+                    margin-left: 0;
+                    width: 100%;
+                }
+
+
+            /* =========================
+                               PAGE CONTAINER
+                               ========================= */
+
+            .page-container {
+                max-width: 1150px;
+                margin: 0 auto;
+            }
+
+
+            /* =========================
+                               PAGE TITLES
+                               ========================= */
+
+            .page-title {
+                font-size: 34px;
+                font-weight: 700;
+                color: #172033;
+                margin-bottom: 5px;
+            }
+
+            .page-subtitle {
+                font-size: 16px;
+                color: #64748b;
+                margin-bottom: 28px;
+            }
+
+
+            /* =========================
+                               CARDS
+                               ========================= */
+
+            .custom-card {
+                background: white;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 22px;
+                box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+            }
+
+
+            /* =========================
+                               RESPONSIVE
+                               ========================= */
+
+            @@media (max-width: 900px) {
+
+                .sidebar {
+                    width: 225px;
+                }
+
+                .main-content.with-sidebar {
+                    margin-left: 225px;
+                    width: calc(100% - 225px);
+                    padding: 28px;
+                }
+            }
+
+
+            @@media (max-width: 700px) {
+
+                .sidebar {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                }
+
+                .main-content.with-sidebar {
+                    margin-left: 0;
+                    width: 100%;
+                    padding: 22px;
+                }
+            }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    @{
+
+        var isAuthenticated =
+            User.Identity?.IsAuthenticated == true;
+
+        var isLoginPage =
+            Context.Request.Path.StartsWithSegments("/Login");
+
+        var isRegisterPage =
+            Context.Request.Path.StartsWithSegments("/Register");
+
+        var isHomePage =
+            Context.Request.Path == "/" ||
+            Context.Request.Path == "/Index";
+
+        var showSidebar =
+            isAuthenticated &&
+            !isLoginPage &&
+            !isRegisterPage &&
+            !isHomePage;
+
+        var isAdmin =
+            User.IsInRole("Admin");
+
+        int unreadCount = 0;
+
+
+        // Notifications are only used by normal users
+        if (isAuthenticated && !isAdmin)
+        {
+
+            var currentUser =
+                await UserManager.GetUserAsync(User);
+
+            if (currentUser != null)
+            {
+
+                unreadCount =
+                    await NotificationService
+                        .GetUnreadCountAsync(currentUser.Id);
+
+            }
+
+        }
+
+    }
+
+
+    @if (showSidebar)
+    {
+
+        <aside class="sidebar">
+
+
+            <!-- LOGO -->
+
+            <div class="sidebar-logo">
+
+                <div class="sidebar-logo-icon">
+
+                    <i class="bi bi-shield-lock-fill"></i>
+
+                </div>
+
+                <span>LOTO Management</span>
+
+            </div>
+
+
+            <!-- DASHBOARD -->
+
+            <a asp-page="@(isAdmin ? "/Admin/Index" : "/UserDashboard/Index")"
+               class="menu-link">
+
+                <div>
+
+                    <i class="bi bi-house-fill"></i>
+
+                    <span>Dashboard</span>
+
+                </div>
+
+            </a>
+
+
+            <!-- LOTO APPLICATION -->
+
+            <details class="sidebar-dropdown"
+                     data-menu="loto">
+
+                <summary class="menu-link">
+
+                    <div>
+
+                        <i class="bi bi-lock-fill"></i>
+
+                        <span>LOTO Application</span>
+
+                    </div>
+
+                    <i class="bi bi-chevron-down dropdown-arrow"></i>
+
+                </summary>
+
+
+                <div class="submenu">
+
+
+                    <!-- COMMON -->
+
+                    <a asp-page="/Loto/Create"
+                       class="submenu-link">
+
+                        <span class="submenu-dot"></span>
+
+                        New LOTO
+
+                    </a>
+
+
+                    <a asp-page="/Loto/End"
+                       class="submenu-link">
+
+                        <span class="submenu-dot"></span>
+
+                        End LOTO
+
+                    </a>
+
+
+                    <!-- USER ONLY -->
+                    @if (!isAdmin)
+                    {
+
+                        <a asp-page="/Loto/MyActive"
+                           class="submenu-link">
+
+                            <span class="submenu-dot"></span>
+
+                            My Active LOTO
+
+                        </a>
+
+
+                        <a asp-page="/Loto/History"
+                           class="submenu-link">
+
+                            <span class="submenu-dot"></span>
+
+                            LOTO History
+
+                        </a>
+
+                    }
+
+
+                    <!-- ADMIN ONLY -->
+                    @if (isAdmin)
+                    {
+
+                        <a asp-page="/Loto/All"
+                           class="submenu-link">
+
+                            <span class="submenu-dot"></span>
+
+                            View All LOTOs
+
+                        </a>
+
+
+                        <a asp-page="/Loto/Delete"
+                           class="submenu-link">
+
+                            <span class="submenu-dot"></span>
+
+                            Delete LOTO
+
+                        </a>
+
+                    }
+
+                </div>
+
+            </details>
+
+
+            <!-- NOTIFICATIONS - USER ONLY -->
+            @if (!isAdmin)
+            {
+
+                <a asp-page="/Notifications/Index"
+                   class="menu-link">
+
+                    <div>
+
+                        <i class="bi bi-bell-fill"></i>
+
+                        <span>Notifications</span>
+
+                    </div>
+
+
+                    @if (unreadCount > 0)
+                    {
+
+                        <span class="notification-badge">
+
+                            @unreadCount
+
+                        </span>
+
+                    }
+
+                </a>
+
+            }
+
+
+            <!-- MASTERS - ADMIN ONLY -->
+            @if (isAdmin)
+            {
+
+                <details class="sidebar-dropdown"
+                         data-menu="masters">
+
+                    <summary class="menu-link">
+
+                        <div>
+
+                            <i class="bi bi-database-fill"></i>
+
+                            <span>Masters</span>
+
+                        </div>
+
+                        <i class="bi bi-chevron-down dropdown-arrow"></i>
+
+                    </summary>
+
+
+                    <div class="submenu">
+
+
+                        <a href="/Admin/Masters/Plants/Index"
+                           class="submenu-link">
+
+                            <span class="submenu-dot"></span>
+
+                            Plants
+
+                        </a>
+
+
+                        <a href="/Admin/Masters/Departments/Index"
+                           class="submenu-link">
+
+                            <span class="submenu-dot"></span>
+
+                            Departments
+
+                        </a>
+
+
+                        <a href="/Admin/Masters/Locations/Index"
+                           class="submenu-link">
+
+                            <span class="submenu-dot"></span>
+
+                            Locations
+
+                        </a>
+
+
+                        <a href="/Admin/Masters/Equipments/Index"
+                           class="submenu-link">
+
+                            <span class="submenu-dot"></span>
+
+                            Equipment
+
+                        </a>
+
+                    </div>
+
+                </details>
+
+
+                <!-- USER MANAGEMENT -->
+
+                <a asp-page="/Admin/Users"
+                   class="menu-link">
+
+                    <div>
+
+                        <i class="bi bi-people-fill"></i>
+
+                        <span>User Management</span>
+
+                    </div>
+
+                </a>
+
+            }
+
+
+            <!-- SETTINGS -->
+
+            <a asp-page="/Settings/Index"
+               class="menu-link">
+
+                <div>
+
+                    <i class="bi bi-gear-fill"></i>
+
+                    <span>Settings</span>
+
+                </div>
+
+            </a>
+
+
+            <!-- LOGOUT -->
+            <form method="post"
+                  asp-page="/Login/Index"
+                  asp-page-handler="Logout"
+                  class="logout-link">
+
+                <button type="submit"
+                        class="menu-link border-0 bg-transparent">
+
+                    <div>
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </div>
+
+                </button>
+
+            </form>
+
+
+        </aside>
+
+    }
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content @(showSidebar ? "with-sidebar" : "no-sidebar")">
+
+        @RenderBody()
+
+    </main>
+
+
+    <!-- Bootstrap -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <!-- SIDEBAR STATE -->
+
+    <script>
+
+            document
+                .querySelectorAll(".sidebar-dropdown")
+                .forEach(function(menu) {
+
+                    const menuName =
+                        menu.dataset.menu;
+
+                    if (localStorage.getItem(menuName) === "open") {
+
+                        menu.open = true;
+
+                    }
+
+                    menu.addEventListener(
+                        "toggle",
+                        function() {
+
+                            if (menu.open) {
+
+                                localStorage.setItem(
+                                    menuName,
+                                    "open"
+                                );
+
+                            }
+                            else {
+
+                                localStorage.setItem(
+                                    menuName,
+                                    "closed"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                });
+
+    </script>
+
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false
+    )
+
+</body>
+
+</html>

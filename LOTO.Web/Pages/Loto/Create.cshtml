@@ -1,0 +1,594 @@
+﻿@page
+@model LOTO.Web.Pages.Loto.CreateModel
+
+@{
+    ViewData["Title"] = "Create LOTO";
+}
+
+<div class="container-fluid px-4 py-4">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1" style="color: #0b2d4d;">
+            Create New LOTO
+        </h2>
+
+        <p class="text-muted mb-0">
+            Create a new Lockout/Tagout operation
+        </p>
+
+    </div>
+
+
+    <!-- Main Card -->
+    <div class="card border-0 shadow-sm">
+
+        <!-- Card Header -->
+        <div class="card-header text-white py-3"
+             style="background-color: #0b2d4d;">
+
+            <h5 class="mb-0 fw-bold">
+                LOTO Information
+            </h5>
+
+            <small style="opacity: 0.8;">
+                Enter the required information below
+            </small>
+
+        </div>
+
+
+        <!-- Card Body -->
+        <div class="card-body p-4">
+
+            <form method="post">
+
+                <!-- Validation -->
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+
+                <!-- LOTO Owner -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold mb-3"
+                        style="color: #0b2d4d;">
+
+                        LOTO Owner
+
+                    </h6>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label fw-semibold">
+                                Created By
+                            </label>
+
+                            <input type="text"
+                                   class="form-control bg-light"
+                                   value="@Model.CurrentUserName"
+                                   readonly />
+
+                            <small class="text-muted">
+                                The logged-in user is automatically assigned as the LOTO owner.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4" />
+
+
+                <!-- Location Information -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold mb-3"
+                        style="color: #0b2d4d;">
+
+                        Location Information
+
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <!-- Plant -->
+                        <div class="col-md-6">
+
+                            <label asp-for="Loto.PlantId"
+                                   class="form-label fw-semibold">
+
+                                Plant
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <select asp-for="Loto.PlantId"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select Plant
+                                </option>
+
+                                @foreach (var plant in Model.Plants)
+                                {
+                                    <option value="@plant.Id">
+                                        @plant.Name
+                                    </option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="Loto.PlantId"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+
+                        <!-- Department -->
+                        <div class="col-md-6">
+
+                            <label asp-for="Loto.DepartmentId"
+                                   class="form-label fw-semibold">
+
+                                Department
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <select asp-for="Loto.DepartmentId"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select Department
+                                </option>
+
+                                @foreach (var department in Model.Departments)
+                                {
+                                    <option value="@department.Id">
+                                        @department.Name
+                                    </option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="Loto.DepartmentId"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+
+                        <!-- Location -->
+                        <div class="col-md-6">
+
+                            <label asp-for="Loto.LocationId"
+                                   class="form-label fw-semibold">
+
+                                Location
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <select asp-for="Loto.LocationId"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select Location
+                                </option>
+
+                                @foreach (var location in Model.Locations)
+                                {
+                                    <option value="@location.Id">
+                                        @location.Name
+                                    </option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="Loto.LocationId"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+
+                        <!-- Equipment -->
+                        <div class="col-md-6">
+
+                            <label asp-for="Loto.EquipmentId"
+                                   class="form-label fw-semibold">
+
+                                Equipment
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <select asp-for="Loto.EquipmentId"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select Equipment
+                                </option>
+
+                                @foreach (var equipment in Model.Equipments)
+                                {
+                                    <option value="@equipment.Id">
+                                        @equipment.Name
+                                    </option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="Loto.EquipmentId"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4" />
+
+
+                <!-- LOTO Details -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold mb-3"
+                        style="color: #0b2d4d;">
+
+                        LOTO Details
+
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <!-- LOTO Type -->
+                        <div class="col-md-6">
+
+                            <label asp-for="Loto.LotoType"
+                                   class="form-label fw-semibold">
+
+                                LOTO Type
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <select asp-for="Loto.LotoType"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select LOTO Type
+                                </option>
+
+                                <option value="1">Electrical</option>
+                                <option value="2">Mechanical</option>
+                                <option value="3">Hydraulic</option>
+                                <option value="4">Pneumatic</option>
+                                <option value="5">Steam</option>
+                                <option value="6">Gas</option>
+                                <option value="7">Thermal</option>
+                                <option value="8">Other</option>
+
+                            </select>
+
+                            <span asp-validation-for="Loto.LotoType"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4" />
+
+
+                <!-- Schedule -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold mb-3"
+                        style="color: #0b2d4d;">
+
+                        Schedule
+
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <!-- Start Date -->
+                        <div class="col-md-6">
+
+                            <label asp-for="Loto.StartDate"
+                                   class="form-label fw-semibold">
+
+                                Start Date & Time
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <input asp-for="Loto.StartDate"
+                                   type="datetime-local"
+                                   class="form-control"
+                                   id="startDate"
+                                   step="60" />
+
+                            <span asp-validation-for="Loto.StartDate"
+                                  class="text-danger small">
+                            </span>
+
+                            <small class="text-muted">
+                                Start time cannot be in the past.
+                            </small>
+
+                        </div>
+
+
+                        <!-- Expected End Date -->
+                        <div class="col-md-6">
+
+                            <label asp-for="Loto.ExpectedEndDate"
+                                   class="form-label fw-semibold">
+
+                                Expected End Date & Time
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <input asp-for="Loto.ExpectedEndDate"
+                                   type="datetime-local"
+                                   class="form-control"
+                                   id="expectedEndDate"
+                                   step="60" />
+
+                            <span asp-validation-for="Loto.ExpectedEndDate"
+                                  class="text-danger small">
+                            </span>
+
+                            <small class="text-muted">
+                                Must be later than the start date.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4" />
+
+
+                <!-- Additional Information -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold mb-3"
+                        style="color: #0b2d4d;">
+
+                        Additional Information
+
+                    </h6>
+
+                    <label asp-for="Loto.Description"
+                           class="form-label fw-semibold">
+
+                        Description
+
+                    </label>
+
+                    <textarea asp-for="Loto.Description"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Enter additional information about this LOTO...">
+                    </textarea>
+
+                    <span asp-validation-for="Loto.Description"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <!-- Required Fields Info -->
+                <div class="mb-4">
+
+                    <small class="text-muted">
+
+                        <span class="text-danger">*</span>
+                        Required fields
+
+                    </small>
+
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a asp-page="/UserDashboard/Index"
+                       class="btn btn-outline-secondary px-4">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn text-white px-4"
+                            style="background-color: #0b2d4d;">
+
+                        Create LOTO
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const startDate = document.getElementById("startDate");
+        const expectedEndDate = document.getElementById("expectedEndDate");
+
+
+        // Current date/time without seconds or milliseconds
+        function getCurrentDateTime() {
+
+            const now = new Date();
+
+            now.setSeconds(0);
+            now.setMilliseconds(0);
+
+            return formatDateTime(now);
+        }
+
+
+        // Converts Date to yyyy-MM-ddTHH:mm
+        function formatDateTime(date) {
+
+            const year = date.getFullYear();
+
+            const month = String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+            const day = String(
+                date.getDate()
+            ).padStart(2, "0");
+
+            const hours = String(
+                date.getHours()
+            ).padStart(2, "0");
+
+            const minutes = String(
+                date.getMinutes()
+            ).padStart(2, "0");
+
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+
+        function updateDateLimits() {
+
+            const currentDateTime = getCurrentDateTime();
+
+
+            // Start Date cannot be in the past
+            startDate.min = currentDateTime;
+
+
+            // If Start Date is empty, set it to now
+            if (!startDate.value) {
+
+                startDate.value = currentDateTime;
+            }
+
+
+            // If Start Date is already in the past, move it to now
+            if (startDate.value < currentDateTime) {
+
+                startDate.value = currentDateTime;
+            }
+
+
+            // Expected End must be at least one minute after Start
+            const start = new Date(startDate.value);
+
+            start.setMinutes(
+                start.getMinutes() + 1
+            );
+
+            const minimumEnd = formatDateTime(start);
+
+            expectedEndDate.min = minimumEnd;
+
+
+            // If Expected End is empty, default to one hour after Start
+            if (!expectedEndDate.value) {
+
+                const defaultEnd =
+                    new Date(startDate.value);
+
+                defaultEnd.setHours(
+                    defaultEnd.getHours() + 1
+                );
+
+                expectedEndDate.value =
+                    formatDateTime(defaultEnd);
+            }
+
+
+            // If Expected End is before the minimum, correct it
+            if (expectedEndDate.value < minimumEnd) {
+
+                expectedEndDate.value = minimumEnd;
+            }
+        }
+
+
+        // Initial setup
+        updateDateLimits();
+
+
+        // Update Expected End when Start Date changes
+        startDate.addEventListener(
+            "change",
+            function() {
+
+                updateDateLimits();
+
+            }
+        );
+
+
+        // Check every minute
+        setInterval(
+            function() {
+
+                updateDateLimits();
+
+            },
+            60000
+        );
+
+    </script>
+
+
+    @if (Model.ShowSuccessMessage)
+    {
+        <script>
+
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "@Model.SuccessMessage",
+                confirmButtonText: "OK"
+            });
+
+        </script>
+    }
+
+}

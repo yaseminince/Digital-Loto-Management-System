@@ -1,0 +1,128 @@
+﻿@page
+@model LOTO.Web.Pages.AccessDenied.IndexModel
+
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<style>
+
+    .access-denied-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .access-denied-card {
+        width: 100%;
+        max-width: 520px;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 50px 40px;
+        text-align: center;
+        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+    }
+
+    .access-denied-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #fff1f2;
+        color: #e11d48;
+        font-size: 36px;
+    }
+
+    .access-denied-card h1 {
+        margin-bottom: 12px;
+        font-size: 30px;
+        font-weight: 700;
+        color: #172033;
+    }
+
+    .access-denied-card p {
+        margin-bottom: 30px;
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .dashboard-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 22px;
+        border-radius: 9px;
+        background: #082f49;
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+        .dashboard-button:hover {
+            background: #0c4568;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+</style>
+
+
+<div class="access-denied-container">
+
+    <div class="access-denied-card">
+
+        <div class="access-denied-icon">
+
+            <i class="bi bi-shield-lock-fill"></i>
+
+        </div>
+
+
+        <h1>
+            Access Denied
+        </h1>
+
+
+        <p>
+            You do not have permission to access this page.
+            Please return to your dashboard and continue using
+            the available features.
+        </p>
+
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-page="/Admin/Index"
+               class="dashboard-button">
+
+                <i class="bi bi-house-fill"></i>
+
+                Back to Dashboard
+
+            </a>
+        }
+        else
+        {
+            <a asp-page="/UserDashboard/Index"
+               class="dashboard-button">
+
+                <i class="bi bi-house-fill"></i>
+
+                Back to Dashboard
+
+            </a>
+        }
+
+    </div>
+
+</div>

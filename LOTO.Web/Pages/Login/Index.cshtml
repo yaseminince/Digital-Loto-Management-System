@@ -1,0 +1,677 @@
+﻿@page
+@model LOTO.Web.Pages.Login.IndexModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="auth-page">
+
+    <div class="auth-card">
+
+        <!-- LEFT SIDE -->
+        <div class="auth-brand">
+
+            <div class="brand-decoration decoration-one"></div>
+            <div class="brand-decoration decoration-two"></div>
+
+            <div class="brand-content">
+
+                <div class="brand-icon">
+                    <i class="bi bi-lock-fill"></i>
+                </div>
+
+                <div class="system-name">
+                    DIGITAL LOTO
+                </div>
+
+                <div class="system-subtitle">
+                    MANAGEMENT SYSTEM
+                </div>
+
+                <div class="brand-line"></div>
+
+                <div class="brand-label">
+                    LOCKOUT / TAGOUT
+                </div>
+
+                <h1>
+                    Safety starts with
+                    <span>proper isolation.</span>
+                </h1>
+
+                <p>
+                    Securely access your Digital LOTO dashboard
+                    and manage Lockout / Tagout operations.
+                </p>
+
+                <div class="brand-security">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    <div>
+                        <strong>Secure Access</strong>
+
+                        <span>
+                            Your LOTO operations are protected.
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="auth-form-section">
+
+            <div class="auth-form-content">
+
+                <div class="form-header">
+
+                    <div class="form-icon">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </div>
+
+                    <div class="access-label">
+                        ACCESS YOUR SYSTEM
+                    </div>
+
+                    <h2>
+                        Welcome Back
+                    </h2>
+
+                    <p>
+                        Sign in to access your Digital LOTO dashboard.
+                    </p>
+
+                </div>
+
+
+                <!-- Validation -->
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger small mb-3">
+                </div>
+
+
+                <form method="post" target="_self">
+
+                    <!-- EMAIL -->
+
+                    <div class="form-field">
+
+                        <label asp-for="Login.Email"
+                               class="form-label">
+
+                            Email
+
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-envelope"></i>
+
+                            <input asp-for="Login.Email"
+                                   class="form-control"
+                                   placeholder="name@loto.com"
+                                   autocomplete="email" />
+
+                        </div>
+
+                        <span asp-validation-for="Login.Email"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-field password-field">
+
+                        <label asp-for="Login.Password"
+                               class="form-label">
+
+                            Password
+
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-key"></i>
+
+                            <input asp-for="Login.Password"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Enter your password"
+                                   autocomplete="current-password" />
+
+                        </div>
+
+                        <span asp-validation-for="Login.Password"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <!-- LOGIN -->
+
+                    <button type="submit"
+                            class="auth-button">
+
+                        <i class="bi bi-box-arrow-in-right"></i>
+
+                        Sign In
+
+                    </button>
+
+                </form>
+
+
+                <div class="form-footer">
+
+                    <span>
+                        Don't have an account?
+                    </span>
+
+                    <a asp-page="/Register/Index">
+                        Create an Account
+                    </a>
+
+                </div>
+
+
+                <div class="secure-note">
+
+                    <i class="bi bi-shield-lock"></i>
+
+                    <span>
+                        Secure access to Digital LOTO
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+
+    /* =========================
+           PAGE
+           ========================= */
+
+    .auth-page {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 45px 25px;
+        background: linear-gradient( 135deg, #f4f7fa 0%, #ffffff 50%, #eef3f7 100% );
+    }
+
+
+    /* =========================
+           CARD
+           ========================= */
+
+    .auth-card {
+        width: 100%;
+        max-width: 1050px;
+        min-height: 600px;
+        display: grid;
+        grid-template-columns: 47% 53%;
+        background: white;
+        border: 1px solid #e5ebf0;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 25px 65px rgba(6, 45, 77, 0.09), 0 5px 18px rgba(6, 45, 77, 0.04);
+    }
+
+
+    /* =========================
+           LEFT BRAND
+           ========================= */
+
+    .auth-brand {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 55px;
+        text-align: center;
+        background: #062d4d;
+        color: white;
+    }
+
+
+    .brand-decoration {
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.06);
+        pointer-events: none;
+    }
+
+
+    .decoration-one {
+        width: 470px;
+        height: 470px;
+        top: -270px;
+        right: -260px;
+    }
+
+
+    .decoration-two {
+        width: 360px;
+        height: 360px;
+        bottom: -250px;
+        left: -230px;
+    }
+
+
+    .brand-content {
+        width: 100%;
+        max-width: 390px;
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .brand-icon {
+        width: 78px;
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.10);
+        border: 1px solid rgba(255,255,255,0.13);
+        font-size: 33px;
+    }
+
+
+    .system-name {
+        color: white;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+
+    .system-subtitle {
+        margin-top: 4px;
+        color: rgba(255,255,255,0.52);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 3px;
+    }
+
+
+    .brand-line {
+        width: 45px;
+        height: 2px;
+        margin: 28px auto 22px;
+        background: #1688e8;
+    }
+
+
+    .brand-label {
+        color: rgba(255,255,255,0.55);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        margin-bottom: 13px;
+    }
+
+
+    .brand-content h1 {
+        margin: 0;
+        color: white;
+        font-size: 34px;
+        line-height: 1.18;
+        font-weight: 800;
+        letter-spacing: -0.7px;
+    }
+
+
+        .brand-content h1 span {
+            display: block;
+            color: #1688e8;
+        }
+
+
+    .brand-content > p {
+        max-width: 350px;
+        margin: 19px auto 0;
+        color: rgba(255,255,255,0.62);
+        font-size: 12px;
+        line-height: 1.75;
+    }
+
+
+    /* SECURITY */
+
+    .brand-security {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 32px;
+        padding-top: 22px;
+        border-top: 1px solid rgba(255,255,255,0.10);
+        text-align: left;
+    }
+
+
+        .brand-security > i {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: rgba(255,255,255,0.08);
+            color: #1688e8;
+            font-size: 17px;
+        }
+
+
+        .brand-security strong,
+        .brand-security span {
+            display: block;
+        }
+
+
+        .brand-security strong {
+            color: rgba(255,255,255,0.80);
+            font-size: 9px;
+            margin-bottom: 3px;
+        }
+
+
+        .brand-security span {
+            color: rgba(255,255,255,0.42);
+            font-size: 8px;
+        }
+
+
+    /* =========================
+           FORM SIDE
+           ========================= */
+
+    .auth-form-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 55px;
+        background: white;
+    }
+
+
+    .auth-form-content {
+        width: 100%;
+        max-width: 420px;
+    }
+
+
+    /* HEADER */
+
+    .form-header {
+        margin-bottom: 30px;
+    }
+
+
+    .form-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+        border-radius: 11px;
+        background: #eaf3f9;
+        color: #062d4d;
+        font-size: 21px;
+    }
+
+
+    .access-label {
+        margin-bottom: 8px;
+        color: #1688e8;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1.8px;
+    }
+
+
+    .form-header h2 {
+        margin: 0;
+        color: #062d4d;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+
+    .form-header p {
+        margin: 9px 0 0;
+        color: #7b8794;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+
+    /* FIELDS */
+
+    .form-field {
+        margin-bottom: 20px;
+    }
+
+
+    .password-field {
+        margin-bottom: 26px;
+    }
+
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #062d4d;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+
+    .input-wrapper {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        border: 1px solid #dce4ea;
+        border-radius: 8px;
+        background: white;
+        transition: 0.2s ease;
+    }
+
+
+        .input-wrapper > i {
+            width: 45px;
+            text-align: center;
+            color: #8493a1;
+            font-size: 15px;
+        }
+
+
+        .input-wrapper .form-control {
+            height: 100%;
+            padding: 0 14px 0 0;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            font-size: 12px;
+            color: #062d4d;
+        }
+
+
+            .input-wrapper .form-control:focus {
+                border: none;
+                outline: none;
+                box-shadow: none;
+            }
+
+
+        .input-wrapper:focus-within {
+            border-color: #062d4d;
+            box-shadow: 0 0 0 3px rgba(6,45,77,0.06);
+        }
+
+
+            .input-wrapper:focus-within > i {
+                color: #062d4d;
+            }
+
+
+    /* BUTTON */
+
+    .auth-button {
+        width: 100%;
+        height: 49px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: none;
+        border-radius: 8px;
+        background: #062d4d;
+        color: white;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 7px 16px rgba(6,45,77,0.14);
+    }
+
+
+        .auth-button:hover {
+            background: #0b3b61;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 9px 20px rgba(6,45,77,0.20);
+        }
+
+
+    /* FOOTER */
+
+    .form-footer {
+        margin-top: 25px;
+        text-align: center;
+        font-size: 10px;
+        color: #8995a2;
+    }
+
+
+        .form-footer a {
+            margin-left: 4px;
+            color: #062d4d;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+
+            .form-footer a:hover {
+                color: #1688e8;
+            }
+
+
+    .secure-note {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #edf0f3;
+        color: #9aa5b0;
+        font-size: 8px;
+    }
+
+
+        .secure-note i {
+            color: #062d4d;
+            font-size: 15px;
+        }
+
+
+    /* MOBILE */
+
+    @@media (max-width: 800px) {
+
+        .auth-page {
+            padding: 25px 15px;
+        }
+
+
+        .auth-card {
+            grid-template-columns: 1fr;
+        }
+
+
+        .auth-brand {
+            min-height: 420px;
+            padding: 45px 30px;
+        }
+
+
+        .auth-form-section {
+            padding: 45px 30px;
+        }
+    }
+
+
+    @@media (max-width: 500px) {
+
+        .auth-brand {
+            min-height: 370px;
+            padding: 35px 20px;
+        }
+
+
+        .auth-form-section {
+            padding: 35px 22px;
+        }
+
+
+        .brand-content h1 {
+            font-size: 29px;
+        }
+
+
+        .form-header h2 {
+            font-size: 28px;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

@@ -1,0 +1,146 @@
+﻿@page
+@model LOTO.Web.Pages.Notifications.IndexModel
+@using LOTO.Domain.Enums
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="container-fluid px-4 py-4">
+
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1" style="color: #0b2d4d;">
+            Notifications
+        </h2>
+
+        <p class="text-muted mb-0">
+            View your latest LOTO notifications
+        </p>
+    </div>
+
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0 fw-bold" style="color: #0b2d4d;">
+                    Notifications
+                </h5>
+
+                <span class="text-muted small">
+                    @Model.Notifications.Count notification(s)
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            @if (Model.Notifications.Any())
+            {
+                foreach (var notification in Model.Notifications)
+                {
+                    <div class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom
+                        @(notification.IsRead ? "bg-white" : "bg-light")">
+
+                        <div class="d-flex align-items-start gap-3">
+
+                            <div style="font-size: 22px;">
+
+                                @if (notification.Type == NotificationType.LotoCreated)
+                                {
+                                    <span>✓</span>
+                                }
+                                else if (notification.Type == NotificationType.LotoClosed)
+                                {
+                                    <span>🔒</span>
+                                }
+                                else if (notification.Type == NotificationType.LotoOverdue)
+                                {
+                                    <span>⚠</span>
+                                }
+
+                            </div>
+
+
+                            <div>
+
+                                <div class="fw-semibold" style="color: #0b2d4d;">
+                                    @notification.Message
+                                </div>
+
+                                @if (notification.Loto != null)
+                                {
+                                    <div class="small mt-1" style="color: #0b2d4d;">
+                                        <span class="fw-semibold">
+                                            @notification.Loto.LotoNumber
+                                        </span>
+                                    </div>
+                                }
+
+                                <div class="small text-muted mt-1">
+                                    @notification.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                </div>
+
+                                @if (!notification.IsRead)
+                                {
+                                    <span class="badge rounded-pill bg-primary-subtle text-primary mt-2">
+                                        New
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        @if (!notification.IsRead)
+                        {
+                            <form method="post"
+                                  asp-page-handler="MarkAsRead">
+
+                                <input type="hidden"
+                                       name="notificationId"
+                                       value="@notification.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-secondary">
+
+                                    Mark as Read
+
+                                </button>
+
+                            </form>
+                        }
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5 text-muted">
+
+                    <div class="mb-2" style="font-size: 36px;">
+                        🔔
+                    </div>
+
+                    <div class="fw-semibold">
+                        No notifications
+                    </div>
+
+                    <small>
+                        You don't have any notifications yet.
+                    </small>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

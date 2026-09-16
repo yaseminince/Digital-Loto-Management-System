@@ -1,0 +1,636 @@
+﻿@page
+@model LOTO.Web.Pages.Loto.AllModel
+
+@{
+    ViewData["Title"] = "All LOTOs";
+}
+
+<link rel="stylesheet"
+      href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.min.css" />
+
+<style>
+
+    .filter-panel {
+        display: none;
+    }
+
+    .dropdown-menu {
+        max-height: 250px;
+        overflow-y: auto;
+    }
+
+    table.dataTable thead th {
+        white-space: nowrap;
+    }
+
+    .dataTables_empty {
+        display: none !important;
+    }
+
+</style>
+
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+                All LOTOs
+            </h2>
+
+            <p class="text-muted mb-0">
+                View all LOTO records
+            </p>
+
+        </div>
+
+
+        <button type="button"
+                class="btn btn-outline-primary"
+                id="filterButton">
+
+            <i class="bi bi-funnel"></i>
+            Filters
+
+        </button>
+
+    </div>
+
+
+    <!-- FILTER PANEL -->
+
+    <div id="filterPanel"
+         class="card shadow-sm border-0 mb-4 filter-panel">
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <!-- STATUS -->
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-semibold">
+                        Status
+                    </label>
+
+                    <div class="dropdown">
+
+                        <button class="btn btn-light border dropdown-toggle w-100 text-start"
+                                type="button"
+                                data-bs-toggle="dropdown">
+
+                            Select Status
+
+                        </button>
+
+
+                        <div class="dropdown-menu p-3 w-100">
+
+                            <div class="form-check mb-2">
+
+                                <input class="form-check-input status-checkbox"
+                                       type="checkbox"
+                                       value="1"
+                                       id="statusActive" />
+
+                                <label class="form-check-label"
+                                       for="statusActive">
+
+                                    Active
+
+                                </label>
+
+                            </div>
+
+
+                            <div class="form-check mb-2">
+
+                                <input class="form-check-input status-checkbox"
+                                       type="checkbox"
+                                       value="2"
+                                       id="statusClosed" />
+
+                                <label class="form-check-label"
+                                       for="statusClosed">
+
+                                    Closed
+
+                                </label>
+
+                            </div>
+
+
+                            <div class="form-check">
+
+                                <input class="form-check-input status-checkbox"
+                                       type="checkbox"
+                                       value="3"
+                                       id="statusOverdue" />
+
+                                <label class="form-check-label"
+                                       for="statusOverdue">
+
+                                    Overdue
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- USER -->
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-semibold">
+                        User
+                    </label>
+
+                    <div class="dropdown">
+
+                        <button class="btn btn-light border dropdown-toggle w-100 text-start"
+                                type="button"
+                                data-bs-toggle="dropdown">
+
+                            Select User
+
+                        </button>
+
+
+                        <div class="dropdown-menu p-3 w-100">
+
+                            @foreach (var user in Model.Users)
+                            {
+                                <div class="form-check mb-2">
+
+                                    <input class="form-check-input user-checkbox"
+                                           type="checkbox"
+                                           value="@user.Id"
+                                           id="user_@user.Id" />
+
+                                    <label class="form-check-label"
+                                           for="user_@user.Id">
+
+                                        @user.Name
+
+                                    </label>
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOTO TYPE -->
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-semibold">
+                        LOTO Type
+                    </label>
+
+                    <div class="dropdown">
+
+                        <button class="btn btn-light border dropdown-toggle w-100 text-start"
+                                type="button"
+                                data-bs-toggle="dropdown">
+
+                            Select Type
+
+                        </button>
+
+
+                        <div class="dropdown-menu p-3 w-100">
+
+                            @foreach (var type in Enum.GetValues<LOTO.Domain.Enums.LotoType>())
+                            {
+                                <div class="form-check mb-2">
+
+                                    <input class="form-check-input type-checkbox"
+                                           type="checkbox"
+                                           value="@((int)type)"
+                                           id="type_@type" />
+
+                                    <label class="form-check-label"
+                                           for="type_@type">
+
+                                        @type
+
+                                    </label>
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATE FROM -->
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+                        Start Date From
+                    </label>
+
+                    <input type="date"
+                           id="startDateFrom"
+                           class="form-control" />
+
+                </div>
+
+
+                <!-- DATE TO -->
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+                        Start Date To
+                    </label>
+
+                    <input type="date"
+                           id="startDateTo"
+                           class="form-control" />
+
+                </div>
+
+            </div>
+
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        id="clearFilters">
+
+                    Clear
+
+                </button>
+
+
+                <button type="button"
+                        class="btn btn-primary"
+                        id="applyFilters">
+
+                    Apply Filters
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table id="lotoTable"
+                       class="table table-hover align-middle w-100">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>LOTO</th>
+
+                            <th>Owner</th>
+
+                            <th>Plant</th>
+
+                            <th>Department</th>
+
+                            <th>Location</th>
+
+                            <th>Equipment</th>
+
+                            <th>Description</th>
+
+                            <th>Start</th>
+
+                            <th>Expected End</th>
+
+                            <th>End Date</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- DataTables -->
+
+<script src="https://cdn.datatables.net/2.3.3/js/dataTables.min.js"></script>
+
+
+<script>
+
+    $(document).ready(function() {
+
+
+        // FILTER PANEL
+
+        $('#filterButton').click(function() {
+
+            $('#filterPanel').slideToggle();
+
+        });
+
+
+        // DATATABLE
+
+        var table = $('#lotoTable').DataTable({
+
+            processing: true,
+
+            serverSide: true,
+
+
+            ajax: {
+
+                url: '@Url.Page("/Loto/All", "Data")',
+
+                type: 'GET',
+
+
+                data: function(d) {
+
+
+                    // STATUS
+
+                    var statuses = [];
+
+                    $('.status-checkbox:checked').each(function() {
+
+                        statuses.push($(this).val());
+
+                    });
+
+
+                    // USERS
+
+                    var userIds = [];
+
+                    $('.user-checkbox:checked').each(function() {
+
+                        userIds.push($(this).val());
+
+                    });
+
+
+                    // LOTO TYPES
+
+                    var lotoTypes = [];
+
+                    $('.type-checkbox:checked').each(function() {
+
+                        lotoTypes.push($(this).val());
+
+                    });
+
+
+                    // ARRAY PARAMETERS
+
+                    statuses.forEach(function(value, index) {
+
+                        d['statuses[' + index + ']'] = value;
+
+                    });
+
+
+                    userIds.forEach(function(value, index) {
+
+                        d['userIds[' + index + ']'] = value;
+
+                    });
+
+
+                    lotoTypes.forEach(function(value, index) {
+
+                        d['lotoTypes[' + index + ']'] = value;
+
+                    });
+
+
+                    // DATES
+
+                    d.startDateFrom =
+                        $('#startDateFrom').val();
+
+                    d.startDateTo =
+                        $('#startDateTo').val();
+
+
+                    // DATATABLE SEARCH
+
+                    d.searchValue =
+                        d.search.value;
+
+
+                    // SERVER SIDE SORTING
+
+                    if (d.order && d.order.length > 0) {
+
+                        d.sortColumn =
+                            d.columns[d.order[0].column].data;
+
+                        d.sortDirection =
+                            d.order[0].dir;
+
+                    }
+
+                }
+
+            },
+
+
+            pageLength: 10,
+
+            lengthMenu: [10, 25, 50],
+
+
+            columns: [
+
+                {
+                    data: 'lotoNumber'
+                },
+
+                {
+                    data: 'user'
+                },
+
+                {
+                    data: 'plant'
+                },
+
+                {
+                    data: 'department'
+                },
+
+                {
+                    data: 'location'
+                },
+
+                {
+                    data: 'equipment'
+                },
+
+                {
+                    data: 'description',
+
+                    render: function(data) {
+
+                        return data
+                            ? data
+                            : '-';
+
+                    }
+
+                },
+
+                {
+                    data: 'startDate'
+                },
+
+                {
+                    data: 'expectedEndDate'
+                },
+
+                {
+                    data: 'endDate'
+                },
+
+
+                // STATUS
+
+                {
+                    data: 'status',
+
+                    render: function(data) {
+
+                        if (data === 'Active') {
+
+                            return '<span class="badge bg-success">Active</span>';
+
+                        }
+
+                        if (data === 'Closed') {
+
+                            return '<span class="badge bg-secondary">Closed</span>';
+
+                        }
+
+                        if (data === 'Overdue') {
+
+                            return '<span class="badge bg-danger">Overdue</span>';
+
+                        }
+
+                        return data;
+
+                    }
+
+                }
+
+            ],
+
+
+            language: {
+
+                search: "Search:",
+
+                lengthMenu: "Show _MENU_ records",
+
+                info: "Showing _START_ to _END_ of _TOTAL_ records",
+
+                infoEmpty: "Showing 0 to 0 of 0 records",
+
+                emptyTable: "",
+
+                zeroRecords: "",
+
+                paginate: {
+
+                    first: "First",
+
+                    last: "Last",
+
+                    next: "Next",
+
+                    previous: "Previous"
+
+                }
+
+            }
+
+        });
+
+
+        // APPLY FILTERS
+
+        $('#applyFilters').click(function() {
+
+            table.ajax.reload();
+
+        });
+
+
+        // CLEAR FILTERS
+
+        $('#clearFilters').click(function() {
+
+            $('.status-checkbox').prop('checked', false);
+
+            $('.user-checkbox').prop('checked', false);
+
+            $('.type-checkbox').prop('checked', false);
+
+            $('#startDateFrom').val('');
+
+            $('#startDateTo').val('');
+
+            table.search('');
+
+            table.ajax.reload();
+
+        });
+
+
+    });
+
+</script>

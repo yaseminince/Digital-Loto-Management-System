@@ -1,0 +1,540 @@
+﻿@page
+@model LOTO.Web.Pages.UserDashboard.IndexModel
+
+@{
+    ViewData["Title"] = "My Dashboard";
+}
+
+<div class="dashboard-page">
+
+    <div class="dashboard-header">
+        <div>
+            <h1>My Dashboard</h1>
+            <p>Overview of your LOTO activities</p>
+        </div>
+    </div>
+
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon active">
+                <i class="bi bi-lock-fill"></i>
+            </div>
+
+            <div>
+                <div class="stat-label">MY ACTIVE LOTO</div>
+                <div class="stat-value">@Model.ActiveLoto</div>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon closed">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+            <div>
+                <div class="stat-label">MY CLOSED LOTO</div>
+                <div class="stat-value">@Model.ClosedLoto</div>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon overdue">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+
+            <div>
+                <div class="stat-label">MY OVERDUE LOTO</div>
+                <div class="stat-value">@Model.OverdueLoto</div>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon today">
+                <i class="bi bi-calendar-day"></i>
+            </div>
+
+            <div>
+                <div class="stat-label">TODAY'S LOTO</div>
+                <div class="stat-value">@Model.TodaysLoto</div>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon today-closed">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+
+            <div>
+                <div class="stat-label">TODAY'S CLOSED</div>
+                <div class="stat-value">@Model.TodaysClosedLoto</div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="charts-grid">
+
+        <!-- STATUS -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+                <h3>MY LOTO BY STATUS</h3>
+                <span>Overview</span>
+            </div>
+
+            <div class="chart-container pie-container">
+                <canvas id="statusChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- DEPARTMENT -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+                <h3>MY LOTO BY DEPARTMENT</h3>
+                <span>Active & Closed</span>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="departmentChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- EQUIPMENT -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+                <h3>MY LOTO BY EQUIPMENT (ACTIVE)</h3>
+                <span>Top 5</span>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="equipmentChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    // =========================
+    // STATUS CHART
+    // =========================
+
+    const statusChart = new Chart(
+        document.getElementById('statusChart'),
+        {
+            type: 'doughnut',
+
+            data: {
+                labels: [
+                    'Active',
+                    'Closed',
+                    'Overdue'
+                ],
+
+                datasets: [{
+                    data: [
+                            @Model.ActiveLoto,
+                            @Model.ClosedLoto,
+                        @Model.OverdueLoto
+                    ],
+
+                    backgroundColor: [
+                        '#22c55e',
+                        '#1688e8',
+                        '#f59e0b'
+                    ],
+
+                    borderWidth: 0
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        }
+    );
+
+
+    // =========================
+    // DEPARTMENT CHART
+    // =========================
+
+    const departmentLabels = [
+            @Html.Raw(string.Join(",",
+                    Model.DepartmentStatistics.Select(x =>
+                            $"'{x.DepartmentName.Replace("'", "\\'")}'")))
+        ];
+
+
+    const departmentActiveData = [
+            @string.Join(",",
+                    Model.DepartmentStatistics.Select(x => x.ActiveCount))
+        ];
+
+
+    const departmentClosedData = [
+            @string.Join(",",
+                    Model.DepartmentStatistics.Select(x => x.ClosedCount))
+        ];
+
+
+    const departmentChart = new Chart(
+        document.getElementById('departmentChart'),
+        {
+            type: 'bar',
+
+            data: {
+                labels: departmentLabels,
+
+                datasets: [
+
+                    {
+                        label: 'Active',
+
+                        data: departmentActiveData,
+
+                        backgroundColor: '#22c55e',
+
+                        borderRadius: 5,
+
+                        barThickness: 18
+                    },
+
+                    {
+                        label: 'Closed',
+
+                        data: departmentClosedData,
+
+                        backgroundColor: '#1688e8',
+
+                        borderRadius: 5,
+
+                        barThickness: 18
+                    }
+
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                },
+
+                scales: {
+
+                    x: {
+                        stacked: false
+                    },
+
+                    y: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+
+    // =========================
+    // EQUIPMENT CHART
+    // =========================
+
+    const equipmentLabels = [
+            @Html.Raw(string.Join(",",
+                    Model.EquipmentStatistics.Select(x =>
+                            $"'{x.EquipmentName.Replace("'", "\\'")}'")))
+        ];
+
+
+    const equipmentValues = [
+            @string.Join(",",
+                    Model.EquipmentStatistics.Select(x => x.Count))
+        ];
+
+
+    const equipmentChart = new Chart(
+        document.getElementById('equipmentChart'),
+        {
+            type: 'bar',
+
+            data: {
+                labels: equipmentLabels,
+
+                datasets: [{
+                    label: 'Active LOTO',
+
+                    data: equipmentValues,
+
+                    backgroundColor: '#22c55e',
+
+                    borderRadius: 5,
+
+                    barThickness: 30
+                }]
+            },
+
+            options: {
+
+                indexAxis: 'y',
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+
+                    x: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        }
+                    },
+
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        }
+    );
+
+</script>
+
+
+<style>
+
+    .dashboard-page {
+        padding: 32px;
+        background: #f6f8fb;
+        min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    .dashboard-header {
+        margin-bottom: 28px;
+    }
+
+
+        .dashboard-header h1 {
+            margin: 0;
+            color: #172b4d;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+
+        .dashboard-header p {
+            margin: 6px 0 0;
+            color: #7b8794;
+            font-size: 14px;
+        }
+
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+
+    .stat-card {
+        background: white;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        padding: 22px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 0;
+        box-shadow: 0 4px 15px rgba(23, 43, 77, 0.05);
+    }
+
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+
+        .stat-icon.active {
+            background: #eaf8ef;
+            color: #22c55e;
+        }
+
+
+        .stat-icon.closed {
+            background: #eaf4ff;
+            color: #1688e8;
+        }
+
+
+        .stat-icon.overdue {
+            background: #fff6e5;
+            color: #f59e0b;
+        }
+
+
+        .stat-icon.today {
+            background: #f0edff;
+            color: #7c3aed;
+        }
+
+
+        .stat-icon.today-closed {
+            background: #edf8f8;
+            color: #0891b2;
+        }
+
+
+    .stat-label {
+        color: #8a94a6;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .5px;
+        margin-bottom: 5px;
+    }
+
+
+    .stat-value {
+        color: #172b4d;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+
+    .chart-card {
+        background: white;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        padding: 22px;
+        min-width: 0;
+        box-shadow: 0 4px 15px rgba(23, 43, 77, 0.05);
+    }
+
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+
+        .chart-header h3 {
+            margin: 0;
+            color: #172b4d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+
+        .chart-header span {
+            color: #9aa5b1;
+            font-size: 11px;
+        }
+
+
+    .chart-container {
+        height: 270px;
+        position: relative;
+    }
+
+
+    .pie-container {
+        height: 270px;
+    }
+
+
+    @@media (max-width: 1200px) {
+
+        .stats-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+
+    @@media (max-width: 700px) {
+
+        .dashboard-page {
+            padding: 20px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-header h1 {
+            font-size: 24px;
+        }
+    }
+
+</style>
