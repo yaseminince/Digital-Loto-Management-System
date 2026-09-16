@@ -149,6 +149,7 @@
 
 
                 <!-- NEW PASSWORD -->
+                <!-- NEW PASSWORD -->
 
                 <div class="mb-3">
 
@@ -163,6 +164,13 @@
                     <input asp-for="NewPassword"
                            type="password"
                            class="form-control" />
+
+
+                    <div class="form-text">
+                        Password must contain at least 6 characters,
+                        1 uppercase letter, 1 lowercase letter,
+                        1 number, and 1 special character.
+                    </div>
 
 
                     <span asp-validation-for="NewPassword"
