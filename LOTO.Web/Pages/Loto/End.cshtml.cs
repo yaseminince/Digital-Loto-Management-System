@@ -15,6 +15,8 @@ namespace LOTO.Web.Pages.Loto
         private readonly UserManager<User> _userManager;
         public bool ShowSuccessMessage { get; set; }
         public string SuccessMessage { get; set; }
+        public bool ShowErrorMessage { get; set; }
+        public string ErrorMessage { get; set; }
         public EndModel(ILotoService lotoService,UserManager<User> userManager)
         {
             _lotoService = lotoService;
@@ -45,7 +47,9 @@ namespace LOTO.Web.Pages.Loto
 
             if (response.Error.HasException)
             {
-                ModelState.AddModelError(string.Empty,response.Error.Message);
+                ShowErrorMessage = true;
+                ErrorMessage = response.Error.Message;
+
                 await OnGetAsync();
                 return Page();
             }

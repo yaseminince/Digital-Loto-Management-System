@@ -59,7 +59,7 @@ namespace LOTO.Web.Pages.Login
         {
             await _signInManager.SignOutAsync();
 
-            return RedirectToPage("/Login/Index");
+            return RedirectToPage("/Index");
         }
     }
 }

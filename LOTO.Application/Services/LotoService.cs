@@ -317,6 +317,13 @@ namespace LOTO.Application.Services
                     return response;
                 }
 
+                if (loto.StartDate > DateTime.Now)
+                {
+                    response.Error.HasException = true;
+                    response.Error.Message = "LOTO cannot be ended before its start date.";
+                    return response;
+                }
+
                 loto.Status = LotoStatus.Closed;
                 loto.ClosedDate = DateTime.Now;
                 loto.UpdatedDate = DateTime.Now;

@@ -460,5 +460,16 @@
 
         </script>
     }
+    @if (Model.ShowErrorMessage)
+{
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Cannot End LOTO',
+            text: '@Model.ErrorMessage',
+            confirmButtonText: 'OK'
+        });
+    </script>
+}
 
 }
